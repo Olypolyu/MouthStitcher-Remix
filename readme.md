@@ -2,13 +2,14 @@
 
 (I will be using Krita, as that is my software of choice. Feel free to contribute instructions for other software.)
 
-## 1. Create a Krita File
+### Before all
 
-Create a new Krita file. It should be a square file with known dimensions, such as 512px by 512px.
+* Make sure all of your assets are square, and of same height, and same width.
+* Make sure all of your assets are using the following scheme: `(file name)_(phoneme)`.
 
-## 2. Draw
+## 1. Draw
 
-Draw your mouths within a folder named using the following scheme: `(file name)_(phoneme)`.
+Draw your mouths within a folder named using the name scheme.
 
 ![Layers Overview](assets/layers.png)
 
@@ -16,7 +17,7 @@ It doesn't matter what you do in each folder, but make sure the mouths are cente
 
 ![Krita Overview](assets/krita_overview.png)
 
-## 3. Export Files
+## 2. Export Files
 
 Go to `Tools > Scripts > Export Layers`.
 
@@ -41,7 +42,7 @@ Your exported layers should look something like this:
 
 ![Exported Mouths](assets/exported_mouths.png)
 
-## 4. Create the Final Sheet
+## 3. Create the Final Sheet
 
 Simply drag in your files. Enter the texture height, and you're good to go.
 
