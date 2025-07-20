@@ -3,7 +3,6 @@
     "background_color": "#ffffff",
     "orientation": "any",
     "display": "standalone",
-    "dir": "left",
     "lang": "en-US",
     "name": "MouthSticher Remix",
     "short_name": "MouthStitcher",
