@@ -1,0 +1,292 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+        />
+
+        <link rel="manifest" href="manifest.json" />
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+            crossorigin="anonymous"
+        />
+
+        <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+            crossorigin="anonymous"
+        ></script>
+
+        <script defer src="index.js"></script>
+        <title>Stitcher tool</title>
+    </head>
+
+    <body>
+        <style>
+            .fancybar::before {
+                display: inline-block;
+                position: relative;
+                top: 0.5rem;
+                content: " ";
+                width: 6px;
+                height: 3rem;
+                background-color: black;
+                margin-right: 6px;
+            }
+
+            .fadeonclick:active {
+                background-color: color-mix(
+                    in oklch,
+                    var(--bs-danger),
+                    transparent 80%
+                ) !important;
+                border-color: var(--bs-danger) !important;
+            }
+
+            .hidden {
+                display: none !important;
+            }
+        </style>
+
+        <template id="replacementMapEntry">
+            <p class="m-1 user-select-none" phoneme="{{phoneme}}">
+                <small class="badge border border-1 text-bg-light">
+                    {{phoneme}}
+                </small>
+            </p>
+        </template>
+
+        <template id="toastTemplate">
+            <div
+                class="toast show"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+            >
+                <div class="toast-header text-bg-{{level}}">
+                    <strong class="me-auto">{{header}}</strong>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        aria-label="Close"
+                    ></button>
+                </div>
+
+                <div class="toast-body">{{body}}</div>
+            </div>
+        </template>
+
+        <template id="fileCardTemplate">
+            <div class="list-group-item p-0 d-flex" style="height: 5rem">
+                <img src="{{imgUrl}}" class="h-100" style="aspect-ratio: 1" />
+
+                <div class="p-2 flex-grow-1 border-start border-2">
+                    <p class="mb-0">
+                        <span class="badge text-bg-primary">{{phoneme}}</span>
+                        {{fileName}}
+                    </p>
+                    <p class="text-secondary">{{fileSize}}</p>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn fadeonclick"
+                    aria-label="Close"
+                    onclick="removeFile('{{phoneme}}')"
+                >
+                    <i class="bi bi-trash text-danger fs-4"></i>
+                </button>
+            </div>
+        </template>
+
+        <div
+            class="toast-container position-fixed top-0 end-0 overflow-y-scroll vh-100 w-50 d-flex flex-column align-items-end p-3"
+            id="toastList"
+        ></div>
+
+        <div class="modal" id="replacementMapModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Replacement Map</h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row position-relative z-1">
+                            <p class="col">Replace With</p>
+                            <p class="col text-end">Replaced By</p>
+                        </div>
+
+                        <div style="position: relative">
+                            <svg
+                                style="
+                                    position: absolute;
+                                    width: 100%;
+                                    height: 25rem;
+                                "
+                                id="replacementMapCanvas"
+                            ></svg>
+                        </div>
+                        <div
+                            class="row position-relative z-1"
+                            id="replacementMap"
+                        >
+                            <div
+                                class="col text-start"
+                                style="width: 2rem"
+                                name="replacement"
+                            ></div>
+                            <div
+                                class="col text-end"
+                                style="width: 2rem"
+                                name="replaced"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-sm p-2 vh-100">
+            <div class="d-flex flex-column gap-3 h-100">
+                <h1 class="m-4">Mouth Stitcher Tool</h1>
+                <h5 class="text-secondary ms-5">Selected Assets</h5>
+                <div
+                    style="height: 30%; display: flex; justify-content: center"
+                    id="dragArea"
+                >
+                    <div
+                        id="fileListEmpty"
+                        class="hidden h-100 align-self-center border-2 border border-secondary-subtle rounded bg-light p-3 text-center d-flex flex-column justify-content-center align-items-center flex-grow-1"
+                        style="
+                            width: fit-content;
+                            border-style: dashed !important;
+                        "
+                    >
+                        <button
+                            class="btn btn-primary w-50"
+                            onclick="actionAddFiles()"
+                        >
+                            <i class="bi bi-folder2-open"></i>
+                            Add File
+                        </button>
+
+                        <p class="text-secondary">
+                            or&hellip; Drag Files Here.
+                        </p>
+                    </div>
+
+                    <div
+                        class="w-100 h-100 border border-1 rounded hidden overflow-y-scroll bg-light"
+                        style="max-height: 30vh"
+                        id="fileList"
+                    >
+                        <div
+                            class="border-bottom border-1 p-1 d-flex justify-content-between position-sticky top-0"
+                            style="z-index: 1; background-color: white"
+                            id="fileListHeader"
+                        >
+                            <button
+                                class="btn btn-primary w-25"
+                                onclick="actionAddFiles()"
+                            >
+                                <i class="bi bi-folder2-open"></i>
+                                Add File
+                            </button>
+                            <button
+                                class="btn btn-primary btn-danger"
+                                onclick="clearFiles()"
+                            >
+                                <i class="bi bi-trash"></i>
+                                Clear All
+                            </button>
+                        </div>
+
+                        <div class="list-group" id="fileListSlot"></div>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-light p-3 border-start border-5 border-secondary-subtle mb-4"
+                    role="alert"
+                >
+                    Please make your texture in a
+                    <b><mark>square</mark></b> shape.
+                </div>
+                <hr />
+
+                <div class="d-flex gap-4">
+                    <div class="form-outline form-floating w-25">
+                        <input
+                            class="form-control"
+                            type="number"
+                            value="512"
+                            id="textureHeightInput"
+                        />
+                        <label class="form-label" for="typeNumber">
+                            Texture Height (px)
+                        </label>
+                    </div>
+
+                    <div class="form-outline form-floating w-25">
+                        <input
+                            class="form-control"
+                            type="text"
+                            id="fileNameInput"
+                        />
+                        <label class="form-label" for="typeNumber">
+                            File Name
+                        </label>
+                    </div>
+
+                    <button
+                        class="btn btn-secondary"
+                        style="height: 3rem"
+                        data-bs-toggle="modal"
+                        data-bs-target="#replacementMapModal"
+                    >
+                        Edit Replacement Map
+                    </button>
+                </div>
+
+                <div class="flex-fill" style="max-height: 300px"></div>
+
+                <div
+                    class="d-flex gap-2 w-75 align-self-center"
+                    id="outputActionGroup"
+                >
+                    <button
+                        class="btn btn-primary w-75"
+                        onclick="actionDowloadFile()"
+                    >
+                        <i class="bi bi-file-earmark-arrow-down"></i>
+                        Save Texture Sheet
+                    </button>
+
+                    <button
+                        class="btn btn-secondary w-25"
+                        onclick="actionPreview()"
+                    >
+                        <i class="bi bi-eye-fill"></i>
+                        Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

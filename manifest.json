@@ -1,0 +1,14 @@
+{
+    "theme_color": "#2ec6fe",
+    "background_color": "#ffffff",
+    "orientation": "any",
+    "display": "standalone",
+    "dir": "left",
+    "lang": "en-US",
+    "name": "MouthSticher Remix",
+    "short_name": "MouthStitcher",
+    "description": "Stitches Together Images to make a animation for PNGTuber Remix",
+    "launch_handler": {
+        "client_mode": ["focus-existing", "auto"]
+    }
+}
