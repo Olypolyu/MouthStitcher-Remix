@@ -18,7 +18,7 @@
         <div class="container-sm p-2">
             <div id="content"></div>
             <script>
-                fetch("/readme.md").then(r => r.text()).then(marked.parse).then(
+                fetch("readme.md").then(r => r.text()).then(marked.parse).then(
                     content => document.getElementById('content').innerHTML = content
                 );
             </script>
