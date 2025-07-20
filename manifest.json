@@ -1,4 +1,5 @@
 {
+    "start_url": "/",
     "theme_color": "#2ec6fe",
     "background_color": "#ffffff",
     "orientation": "any",
@@ -10,11 +11,22 @@
     "launch_handler": {
         "client_mode": ["focus-existing", "auto"]
     },
+
     "icons": [
         {
-            "src": "icon-512.png",
+            "src": "icon.png",
             "sizes": "512x512",
             "type": "image/png"
         }
+    ],
+
+    "screenshots": [
+        {
+            "src": "screenshot_wide.png",
+            "sizes": "3840x2160",
+            "form_factor": "wide",
+            "label": "Main view of the app."
+        }
     ]
+
 }

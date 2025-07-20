@@ -383,7 +383,20 @@ function main() {
             e.preventDefault();
             updateFileList();
         }
-    )
+    );
+
+    dragAreaEl.addEventListener(
+        "dragenter", (e) => { dragAreaEl.classList.add("dragover"); }
+    );
+    dragAreaEl.addEventListener(
+        "dragleave", (e) => { dragAreaEl.classList.remove("dragover"); }
+    );
+    dragAreaEl.addEventListener(
+        "dragend", (e) => { dragAreaEl.classList.remove("dragover"); }
+    );
+    dragAreaEl.addEventListener(
+        "drop", (e) => { dragAreaEl.classList.remove("dragover"); }
+    );
 
     let phonemeListEl = phonemes.reduce(
         (acc, phoneme) => acc + replacementMapEntryTemplate({phoneme:phoneme}), ""

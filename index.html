@@ -33,6 +33,20 @@
 
     <body>
         <style>
+            .withHero::before {
+                position: absolute;
+                display: block;
+                top: -2.5rem;
+                width: 15rem;
+                height: 15rem;
+                opacity: 40%;
+                z-index: -1;
+                content: "";
+
+                background-image: url("hero.png");
+                background-size: cover;
+            }
+
             .fancybar::before {
                 display: inline-block;
                 position: relative;
@@ -55,6 +69,13 @@
 
             .hidden {
                 display: none !important;
+            }
+
+            #dragArea.dragover {
+                outline: 3px solid var(--bs-primary);
+                outline-offset: 6px;
+                border-radius: var(--bs-border-radius);
+                filter: drop-shadow(8px 8px 16px color-mix(in hsl, var(--bs-primary), transparent 80%));
             }
         </style>
 
@@ -130,7 +151,7 @@
                     <div class="modal-body">
                         <div class="row position-relative z-1">
                             <p class="col">Replace With</p>
-                            <p class="col text-end">Replaced By</p>
+                            <p class="col text-end">Replaced</p>
                         </div>
 
                         <div style="position: relative">
@@ -165,7 +186,7 @@
 
         <div class="container-sm p-2 vh-100">
             <div class="d-flex flex-column gap-3 h-100">
-                <h1 class="m-4">Mouth Stitcher Tool</h1>
+                <h1 class="m-4 withHero">Mouth Stitcher Tool</h1>
                 <h5 class="text-secondary ms-5">Selected Assets</h5>
                 <div
                     style="height: 30%; display: flex; justify-content: center"
