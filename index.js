@@ -361,6 +361,15 @@ function main() {
         (event) => { showToast(event.reason.type, event.reason, "error"); }
     );
 
+        window.addEventListener(
+        "beforeunload", 
+            (event) =>{
+                if (selectedFiles.values().toArray().filter(i=>i).length > 0) {
+                    event.preventDefault();
+                }
+            }
+        );
+
     replacementMapModal.addEventListener("shown.bs.modal", drawReplacementMap);
     window.addEventListener(
         "resize",
